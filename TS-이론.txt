@@ -1,0 +1,114 @@
+#
+타입스크립트 사용 이유
+타입 안정성 때문이다.
+자바스크립트에 타입을 지정할 수 있게 해준다.
+자바스크립트는 코드가 너무 유연해서 실행되면 안되는 코드가 실행된다.
+ex)
+1.
+[1, 2, 3, 4] + true // '1,2,3,4true'
+2.
+const nico = {name:'Ahn'}
+nico.hello() // 실행되고 에러남. 다른 언어라면 실행되기 전에 에러가 남.
+3.
+function add(a, b){return a+b}
+add('hi') // 돌아감. 
+타입스크립트는 위와 같은 상황을 막아준다.
+
+#
+타입스크립트 작동 방식
+c#, java, rust, go 처럼 다른 언어들은 어셈블리코드나 바이트 코드 이진코드 등 컴퓨터가 읽을 수 있게 컴파일된다.
+그런데 타입스크립트는 자바스크립트로 컴파일된다. 
+그리고 타입스크립트에 오류가 있다면 자바스크립트로 컴파일되지 않는다. 
+
+#
+타입 추론 : 타입스크립트는 데이터타입을 명시해줘도 되지만 안해도 알아서 데이터의 타입을 추론한다.
+ex)
+let a = "hello"
+a = "bye"
+a = 7 // 에러남.
+
+#
+타입스크립트 문법, Type Checker (타입스크립트에게 타입 추론을 맡기는 게 더 낫다.)
+let a:string = "x"
+let b:number[] = [] // 빈 배열 생성시 타입추론을 하지 못하므로 이런 경우엔 데이터타입을 명시해주는게 낫다.
+
+#
+optional parameter
+const player = {
+    name : string,
+    age? : number // optional(?) 없어도 된다는 의미 
+} = {
+    name = 'doyeon'
+}
+age : number | undefined <- 이렇게 바뀐다고 보면 됨.
+
+#
+Alias(별칭)
+type Player = {
+    name:string
+    age?:number
+}
+const nico : Player = {
+    name="nico"
+}
+
+#
+argument, return type 할당하는 법
+function name():string[] // 스트링배열로 리턴
+function playerMaker(name:string) : Player {// Argument 타입 지정
+    return {
+        name:name
+    }
+} 
+const nico = playerMaker("nico")
+nico.age = 12 // function에 :Player 추가 전에 에러났음.
+## 화살표함수로 쓰는 법.
+const playerMaker = (name:string) : Player => ({name})
+
+#
+readonly(읽기 전용) : 수정하지 못하도록 막는 것
+type Player = {
+    readonly name:string
+}
+nico.name = "hi" // 에러남.
+## 
+const numbers: readonly number[] = [1,2,3]
+number.push(1)// 에러남.
+
+#
+Tuple : array를 생성한다. 최소한의 길이를 가져야하고 특정 위치에 특정 타입이 있어야만 한다.
+["nico", 12, true] <- 타입스크립트로 바꿔보자
+const player: [string, number, boolean] = ["nico", 12, true]
+player[0] = 1 //에러남
+
+#
+any : 타입스크립트를 빠져나오는 타입. 안쓰는 걸 추천하나 가끔 쓸 때 있음.
+const a : any[] = [1, 2, 3, 4]
+const b: any = true
+a+b //잘 작동함
+
+#
+타입스크립트에만 있는 타입
+## unknown : 어떤 작업을 하려면 이 변수의 타입을 먼저 확인해야 한다. 변수의 타입을 알지 못할 때 사용 (any타입과 비슷한데 더 안전함)
+let a:unknown;
+let b = a+1; //에러남.
+if (typeof a === 'number'){ // 이렇게 바꿔주면 됨.
+    let b = a+1;
+}
+## void : 아무것도 return하지 않는 함수에 사용. 보통 지정하진 않고 타입스크립트가 알아서 추론함.
+function hello(){
+    console.log('x');
+}
+const a = hello();
+a.toUpperCase() // 에러남. void엔 toUpperCase()함수가 없다고
+## never : 잘 사용되진 않음. 함수가 절대 return하지 않을 때 발생 (에러를 발생시킬 때, 함수에서 exception(예외)가 발생할 때)
+function hello():never{ // 에러를 발생시킬 때
+    throw new Error("xxx"); // return 'xxx'쓰면 에러남.
+}
+function hello(name:string|number){ // exception(예외)가 발생할 때
+    if (typeof name === 'string){
+    }else if (typeof name === 'number'){        
+    }else {
+        name // 이 타입은 never이다.
+    }
+}
