@@ -172,3 +172,64 @@ const nico: Player<{favFood:string}>={
         favFood: "coffee"
     }
 } // type끼리는 재사용이 가능하다.
+
+# 공부가 더 필요할 듯
+객체 접근 제한자
+private: 자기 자신만 접근할 수 있음.
+protected: 상속한 곳에서 접근할 수 있음.
+public: 모든 곳에서 접근할 수 있음.
+abstract: 추상 메소드. 실제 new object()로는 만들 수 없고 상속받기 위해 만드는 클래스 제한자
+## ex)
+abstract class User{
+    constructor(
+        protected firstName:string,
+        protected lastName:string,
+        protected nickname:string
+    ) {}
+    getFullName(){
+        return `${this.firstName} ${this.lastName}`
+    }
+}
+
+class Player extends User{
+    getNickName(){
+        console.log(this.nickname)
+    }
+}
+
+const nico = new Player("niko", 'las', '니꼬');
+
+nico.getFullName();
+new User("nico", 'las', '니꼬') // 타입스크립트에서 에러남. 자바스크립트에선 안남.
+## ex2)
+type Words = {
+    [key:string]: string
+}
+
+class Dict{
+    private words:Words
+    constructor(){
+        this.words={}
+    }
+    add(word:Word){ // 파라미터 타입으로 class를 사용할 수 있다.
+        if(this.words[word.term]===undefined){
+            this.words[word.term] = word.def;
+        }
+    }
+    def(term:string){
+        return this.words[term]
+    }
+}
+class Word {
+    constructor(
+        public term:string,
+        public def: string
+    ){}
+}
+
+const kimchi = new Word("kimchi", '한국음식')
+
+const dict = new Dict()
+dict.add(kimchi);
+console.log(dict)
+console.log(dict.def('kimchi'))
