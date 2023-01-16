@@ -233,3 +233,38 @@ const dict = new Dict()
 dict.add(kimchi);
 console.log(dict)
 console.log(dict.def('kimchi'))
+
+#
+interface : 
+type과 사용법이 거의 유사하다. 객체(object)의 구조를 만드는데 거의 사용된다.
+가장 큰 차이는 type은 새 porperty를 추가하기 위해 다시 선언될 수 없지만,
+interface는 항상 상속될 수 있다.
+## interface 문법의 확장
+interface Animal {
+    name: string
+}
+interface Bear extends Animal {
+    honey: boolean
+}
+const bear = getBear()
+bear.name
+bear.honey
+## type 문법의 확장
+type Animal = {
+    name: string
+}
+type Bear = Animal & {
+    honey: boolean
+}
+const bear = getBear()
+bear.name
+bear.honey
+## interface에서만 가능한것
+interface Window{
+    title: string
+}
+interface Window{ // interface가 type이라면 오류남
+    ts: TypeScriptAPI
+}
+const src = 'const a = "Hello World"';
+window.ts.transpileModule(src, {});
